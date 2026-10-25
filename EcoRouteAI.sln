@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36429.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{F9D73EA2-292D-4BEA-A023-8000D74DF020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{6F2E8442-02B5-4EAC-9EF4-0CF42FADF7D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{5664E573-482E-447E-802F-57160080F73D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Views", "Views\Views.csproj", "{948A49AA-A24A-4598-91EA-59EDA365586B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pseudo_Code_Core", "Pseudo_Code_Core", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		AStarAlgorithm.txt = AStarAlgorithm.txt
+		GeoMathAlgorithm.txt = GeoMathAlgorithm.txt
+		PathNodeAlgorithm.txt = PathNodeAlgorithm.txt
+		PriorityQueueAlgorithm.txt = PriorityQueueAlgorithm.txt
+		RoadGraphAlgorithm.txt = RoadGraphAlgorithm.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9D73EA2-292D-4BEA-A023-8000D74DF020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9D73EA2-292D-4BEA-A023-8000D74DF020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9D73EA2-292D-4BEA-A023-8000D74DF020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9D73EA2-292D-4BEA-A023-8000D74DF020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F2E8442-02B5-4EAC-9EF4-0CF42FADF7D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F2E8442-02B5-4EAC-9EF4-0CF42FADF7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F2E8442-02B5-4EAC-9EF4-0CF42FADF7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F2E8442-02B5-4EAC-9EF4-0CF42FADF7D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5664E573-482E-447E-802F-57160080F73D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5664E573-482E-447E-802F-57160080F73D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5664E573-482E-447E-802F-57160080F73D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5664E573-482E-447E-802F-57160080F73D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{948A49AA-A24A-4598-91EA-59EDA365586B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{948A49AA-A24A-4598-91EA-59EDA365586B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{948A49AA-A24A-4598-91EA-59EDA365586B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{948A49AA-A24A-4598-91EA-59EDA365586B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6C65093B-9DDE-478B-9E51-30682B6C0A00}
+	EndGlobalSection
+EndGlobal

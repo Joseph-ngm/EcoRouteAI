@@ -1,0 +1,55 @@
+CLASSE PathNode
+
+Fonction CréerPathNode(node : RoadNode; parent : PathNode;
+                        edge : RoadEdge; gCost, hCost : réel) : PathNode
+Début
+    Var p : PathNode;
+
+    Si node = nul alors :
+        Lever(ArgumentNullException);
+    FinSi;
+
+    p.Node   <= node;
+    p.Parent <= parent;
+    p.Edge   <= edge;
+    p.GCost  <= gCost;
+    p.HCost  <= hCost;
+
+    Retourner(p);
+Fin
+
+
+Fonction FCost(p : PathNode) : réel
+Début
+    Retourner(p.GCost + p.HCost);
+Fin
+
+
+Fonction ReconstructPath(p : PathNode) : Tableau PathNode
+Début
+    Var chemin  : Tableau PathNode;
+    Var courant : PathNode;
+
+    courant <= p;
+
+    Répéter
+        chemin[longueur(chemin)] <= courant;
+        courant <= courant.Parent;
+    Jusqu'à(courant = nul);
+
+    Inverser(chemin);
+
+    Retourner(chemin);
+Fin
+
+
+Fonction CompareTo(p, autre : PathNode) : entier
+Début
+    Si autre = nul alors :
+        Retourner(-1);
+    FinSi;
+
+    Retourner(FCost(p) - FCost(autre));
+Fin
+
+

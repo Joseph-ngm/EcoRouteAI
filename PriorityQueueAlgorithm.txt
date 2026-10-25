@@ -1,0 +1,96 @@
+CLASSE PriorityQueue
+
+Var _nodes : Tableau de (Élément, Priorité);
+
+Fonction Count() : entier
+Début
+    Retourner(longueur(_nodes));
+Fin
+
+Procédure Enqueue(élément : quelconque; priorité : réel)
+Début
+    _nodes[longueur(_nodes)] <= (élément, priorité);
+    BubbleUp(longueur(_nodes) - 1);
+Fin
+
+Fonction Dequeue() : quelconque
+Début
+    Var racine     : quelconque;
+    Var dernierIdx : entier;
+
+    Si longueur(_nodes) = 0 alors :
+        Lever(InvalidOperationException("File de priorité vide."));
+    FinSi;
+
+    racine     <= _nodes[0].Élément;
+    dernierIdx <= longueur(_nodes) - 1;
+
+    _nodes[0] <= _nodes[dernierIdx];
+    Supprimer(_nodes, dernierIdx);
+
+    Si longueur(_nodes) > 0 alors :
+        BubbleDown(0);
+    FinSi;
+
+    Retourner(racine);
+Fin
+
+Procédure BubbleUp(index : entier)
+Début
+    Var parent : entier;
+
+    Répéter
+        Si index <= 0 alors :
+            Sortir;
+        FinSi;
+
+        parent <= (index - 1) / 2;
+
+        Si Priorité(_nodes[index]) < Priorité(_nodes[parent]) alors :
+            Echanger(index, parent);
+            index <= parent;
+        Sinon :
+            Sortir;
+        FinSi;
+    Jusqu'à(index = 0);
+Fin
+
+Procédure BubbleDown(index : entier)
+Début
+    Var gauche, droite, plusPetit, dernierIdx : entier;
+
+    dernierIdx <= longueur(_nodes) - 1;
+
+    Répéter
+        gauche    <= 2 * index + 1;
+        droite    <= 2 * index + 2;
+        plusPetit <= index;
+
+        Si gauche <= dernierIdx
+           ET Priorité(_nodes[gauche]) < Priorité(_nodes[plusPetit]) alors :
+            plusPetit <= gauche;
+        FinSi;
+
+        Si droite <= dernierIdx
+           ET Priorité(_nodes[droite]) < Priorité(_nodes[plusPetit]) alors :
+            plusPetit <= droite;
+        FinSi;
+
+        Si plusPetit = index alors :
+            Sortir;
+        FinSi;
+
+        Echanger(index, plusPetit);
+        index <= plusPetit;
+    Jusqu'à(plusPetit = index);
+Fin
+
+
+Procédure Echanger(i, j : entier)
+Début
+    Var temp : (quelconque, réel);
+
+    temp      <= _nodes[i];
+    _nodes[i] <= _nodes[j];
+    _nodes[j] <= temp;
+Fin

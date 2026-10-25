@@ -1,0 +1,182 @@
+﻿
+CLASSE AStarAlgorithm
+
+Var _graph   : RoadGraph;
+Var _weights : CostWeights;
+
+Procédure CréerAStarAlgorithm(graph : RoadGraph; weights : CostWeights)
+Début
+    Si graph = nul alors :
+        Lever(ArgumentNullException("graph"));
+    FinSi;
+
+    Si weights = nul alors :
+        Lever(ArgumentNullException("weights"));
+    FinSi;
+
+    _graph   <= graph;
+    _weights <= weights;
+Fin
+
+
+Fonction FindPath(startId, goalId : entier) : RouteResult
+Début
+    Var openSet             : PriorityQueue;
+    Var gCosts              : Dictionnaire<entier, réel>;
+    Var visité              : Ensemble<entier>;
+    Var exploré             : entier;
+    Var startNode, goalNode,
+        voisin              : RoadNode;
+    Var initial, courant,
+        nœudPath            : PathNode;
+    Var arc                 : RoadEdge;
+    Var gTentatif, bestG, h : réel;
+
+    Si TryGetNode(startId, startNode) = Faux alors :
+        Retourner(FailedResult(0));
+    FinSi;
+
+    Si TryGetNode(goalId, goalNode) = Faux alors :
+        Retourner(FailedResult(0));
+    FinSi;
+
+    openSet  <= PriorityQueue vide;
+    gCosts   <= Dictionnaire vide;
+    visité   <= Ensemble vide;
+    exploré  <= 0;
+
+    initial <= CréerPathNode(startNode, nul, nul,
+                              gCost <= 0,
+                              hCost <= Heuristique(startNode, goalNode));
+
+    Enqueue(openSet, initial, FCost(initial));
+    gCosts[startId] <= 0;
+
+    Répéter
+        courant <= Dequeue(openSet);
+        exploré <= exploré + 1;
+
+        Si courant.Node.Id DANS visité alors :
+            Continuer;
+        FinSi;
+
+        Ajouter(visité, courant.Node.Id);
+
+        Si courant.Node.Id = goalId alors :
+            Retourner(BuildResult(courant, exploré));
+        FinSi;
+
+        Pour chaque arc dans GetNeighbors(courant.Node.Id) faire :
+
+            Si arc.ToNodeId DANS visité alors :
+                Continuer;
+            FinSi;
+
+            Si TryGetNode(arc.ToNodeId, voisin) = Faux alors :
+                Continuer;
+            FinSi;
+
+            gTentatif <= courant.GCost + ComputeEdgeCost(_weights, arc, voisin);
+
+            Si gCosts[arc.ToNodeId] existe alors :
+                bestG <= gCosts[arc.ToNodeId];
+                Si gTentatif >= bestG alors :
+                    Continuer;
+                FinSi;
+            FinSi;
+
+            gCosts[arc.ToNodeId] <= gTentatif;
+            h        <= Heuristique(voisin, goalNode);
+            nœudPath <= CréerPathNode(voisin, courant, arc, gTentatif, h);
+            Enqueue(openSet, nœudPath, FCost(nœudPath));
+
+        FinPour;
+
+    Jusqu'à(Count(openSet) = 0);
+
+    Retourner(FailedResult(exploré));
+Fin
+
+Fonction Heuristique(de, vers : RoadNode) : réel
+Début
+    Var distKm : réel;
+
+    distKm <= HaversineKm(de.Latitude, de.Longitude,
+                           vers.Latitude, vers.Longitude);
+
+    Retourner(distKm * _weights.Distance);
+Fin
+
+
+Fonction BuildResult(nœudGoal : PathNode; exploré : entier) : RouteResult
+Début
+    Var cheminNœuds            : Tableau PathNode;
+    Var nœuds                  : Tableau RoadNode;
+    Var arcs                   : Tableau RoadEdge;
+    Var distTotale, traficTotal,
+        pollTotal, sécuritéTot : réel;
+    Var vitesseMoy, duréeMin   : réel;
+    Var i                      : entier;
+    Var résultat               : RouteResult;
+
+    cheminNœuds <= ReconstructPath(nœudGoal);
+
+    Pour i de 0 à longueur(cheminNœuds) - 1 faire :
+        nœuds[i] <= cheminNœuds[i].Node;
+    FinPour;
+
+    Pour i de 1 à longueur(cheminNœuds) - 1 faire :
+        arcs[i - 1] <= cheminNœuds[i].Edge;
+    FinPour;
+
+    distTotale  <= 0;
+    traficTotal <= 0;
+    pollTotal   <= 0;
+    sécuritéTot <= 0;
+
+    Pour chaque arc dans arcs faire :
+        distTotale  <= distTotale  + arc.DistanceKm;
+        traficTotal <= traficTotal + arc.TrafficLevel;
+    FinPour;
+
+    Pour chaque nœud dans nœuds faire :
+        pollTotal   <= pollTotal   + nœud.Pollution;
+        sécuritéTot <= sécuritéTot + nœud.Safety;
+    FinPour;
+
+    Si longueur(arcs) > 0 alors :
+        vitesseMoy <= 0;
+        Pour chaque arc dans arcs faire :
+            vitesseMoy <= vitesseMoy + GetDefaultSpeed(arc.HighwayType);
+        FinPour;
+        vitesseMoy <= vitesseMoy / longueur(arcs);
+    Sinon :
+        vitesseMoy <= 50;
+    FinSi;
+
+    duréeMin <= (distTotale / vitesseMoy) * 60;
+
+    résultat.Path                 <= nœuds;
+    résultat.Edges                <= arcs;
+    résultat.TotalDistanceKm      <= distTotale;
+    résultat.TotalTraffic         <= traficTotal;
+    résultat.TotalPollution       <= pollTotal;
+    résultat.TotalSafety          <= sécuritéTot;
+    résultat.TotalCost            <= nœudGoal.GCost;
+    résultat.EstimatedDurationMin <= duréeMin;
+    résultat.NodesExplored        <= exploré;
+
+    Retourner(résultat);
+Fin
+
+Fonction FailedResult(exploré : entier) : RouteResult
+Début
+    Var résultat : RouteResult;
+
+    résultat.NodesExplored <= exploré;
+
+    Retourner(résultat);
+Fin
+
+
+

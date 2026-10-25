@@ -1,0 +1,95 @@
+CLASSE RoadGraph
+
+Var _nodes     : Dictionnaire<entier, RoadNode>;
+Var _adjacency : Dictionnaire<entier, Tableau RoadEdge>;
+
+
+Fonction NodeCount() : entier
+Début
+    Retourner(longueur(_nodes));
+Fin
+
+
+Fonction EdgeCount() : entier
+Début
+    Var total, i : entier;
+
+    total <= 0;
+
+    Pour i de 0 à longueur(_adjacency) - 1 faire :
+        total <= total + longueur(_adjacency[i]);
+    FinPour;
+
+    Retourner(total);
+Fin
+
+
+Procédure AddNode(node : RoadNode)
+Début
+    _nodes[node.Id] <= node;
+
+    Si node.Id ABSENT DE _adjacency alors :
+        _adjacency[node.Id] <= Tableau vide;
+    FinSi;
+Fin
+
+
+Procédure AddEdge(edge : RoadEdge)
+Début
+    Si edge.FromNodeId ABSENT DE _adjacency alors :
+        _adjacency[edge.FromNodeId] <= Tableau vide;
+    FinSi;
+
+    _adjacency[edge.FromNodeId][longueur(_adjacency[edge.FromNodeId])] <= edge;
+Fin
+
+
+Fonction TryGetNode(id : entier; var node : RoadNode) : booléen
+Début
+    Si id PRESENT DANS _nodes alors :
+        node <= _nodes[id];
+        Retourner(Vrai);
+    FinSi;
+
+    node <= nul;
+    Retourner(Faux);
+Fin
+
+
+Fonction GetNeighbors(nodeId : entier) : Tableau RoadEdge
+Début
+    Si nodeId PRESENT DANS _adjacency alors :
+        Retourner(_adjacency[nodeId]);
+    FinSi;
+
+    Retourner(Tableau vide);
+Fin
+
+
+Fonction FindNearestNode(latitude, longitude : réel) : RoadNode
+Début
+    Var plusProche : RoadNode;
+    Var distMin, dist : réel;
+    Var node : RoadNode;
+
+    plusProche <= nul;
+    distMin    <= +Infini;
+
+    Pour chaque node dans _nodes faire :
+        dist <= HaversineKm(latitude, longitude, node.Latitude, node.Longitude);
+
+        Si dist < distMin alors :
+            distMin    <= dist;
+            plusProche <= node;
+        FinSi;
+    FinPour;
+
+    Retourner(plusProche);
+Fin
+
+
+Procédure Clear()
+Début
+    Vider(_nodes);
+    Vider(_adjacency);
+Fin

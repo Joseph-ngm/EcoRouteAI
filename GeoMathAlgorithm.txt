@@ -1,0 +1,26 @@
+CLASSE GeoMath
+
+Constante RayonTerre : réel <= 6371.0;
+
+
+Fonction HaversineKm(lat1, lon1, lat2, lon2 : réel) : réel
+Début
+    Var dLat, dLon, a, c : réel;
+
+    dLat <= ToRad(lat2 - lat1);
+    dLon <= ToRad(lon2 - lon1);
+
+    a <= SIN(dLat / 2) * SIN(dLat / 2)
+         + COS(ToRad(lat1)) * COS(ToRad(lat2))
+         * SIN(dLon / 2) * SIN(dLon / 2);
+
+    c <= 2 * ATAN2(RACINE(a), RACINE(1 - a));
+
+    Retourner(RayonTerre * c);
+Fin
+
+
+Fonction ToRad(degrés : réel) : réel
+Début
+    Retourner(degrés * PI / 180);
+Fin
